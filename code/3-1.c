@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Node {
-    char name[50];
+struct Student {
+    char name[100];
     int score;
-    struct Node* next;
-} Node;
+    struct Student* next;
+};
 
-Node* head = NULL;
+struct Student* head = NULL;
 
-void addlastname(char name[], int score) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
+void add(char name[], int score) {
+    struct Student* newNode =
+        (struct Student*)malloc(sizeof(struct Student));
+
     strcpy(newNode->name, name);
     newNode->score = score;
     newNode->next = NULL;
@@ -21,55 +23,99 @@ void addlastname(char name[], int score) {
         return;
     }
 
-    Node* cur = head;
-    while (cur->next != NULL) {
-        cur = cur->next;
+    struct Student* curr = head;
+
+    while (curr->next != NULL) {
+        curr = curr->next;
     }
-    cur->next = newNode;
+
+    curr->next = newNode;
 }
 
-void deletelastname(char name[]) {
-    Node* cur = head;
-    Node* prev = NULL;
+void delete(char name[]) {
+    struct Student* curr = head;
+    struct Student* prev = NULL;
 
-    while (cur != NULL) {
-        if (strcmp(cur->name, name) == 0) {
+    while (curr != NULL) {
+
+        if (strcmp(curr->name, name) == 0) {
+
             if (prev == NULL) {
-                head = cur->next;
-            } else {
-                prev->next = cur->next;
+                head = curr->next;
             }
-            free(cur);
+            else {
+                prev->next = curr->next;
+            }
+
+            free(curr);
             return;
         }
-        prev = cur;
-        cur = cur->next;
+
+        prev = curr;
+        curr = curr->next;
     }
 }
 
+void printList() {
+    struct Student* curr = head;
 
+    while (curr != NULL) {
+        printf("%s %d\n",
+               curr->name,
+               curr->score);
+
+        curr = curr->next;
+    }
+}
+
+void freeList() {
+    struct Student* curr = head;
+
+    while (curr != NULL) {
+        struct Student* temp = curr;
+
+        curr = curr->next;
+
+        free(temp);
+    }
+}
 
 int main() {
-    char command[20];
-    char name[50];
-    int score;
+
+    char command[100];
 
     while (1) {
+
         scanf("%s", command);
 
         if (strcmp(command, "add") == 0) {
+
+            char name[100];
+            int score;
+
             scanf("%s %d", name, &score);
-            addlastname(name, score);
+
+            add(name, score);
         }
+
         else if (strcmp(command, "delete") == 0) {
+
+            char name[100];
+
             scanf("%s", name);
-            deletelastname(name);
+
+            delete(name);
         }
+
         else if (strcmp(command, "print") == 0) {
+
             printList();
         }
+
         else if (strcmp(command, "quit") == 0) {
+
             freeList();
+
             break;
         }
     }
